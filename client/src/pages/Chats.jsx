@@ -17,9 +17,7 @@ const Chats = () => {
   const getFromFav = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/getFromFav", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        withCredentials: true,
       });
       const { data } = await res.data;
       setFriends(data);

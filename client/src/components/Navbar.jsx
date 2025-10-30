@@ -1,100 +1,95 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { IoChevronDown } from "react-icons/io5";
+import { useUser, useClerk } from "@clerk/clerk-react";
+
 
 const Navbar = () => {
-  const { user, setUser } = useContext(AppContext);
+  const { user, isSignedIn } = useUser();
+  const { signOut } = useClerk();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    toast.success("Logout successfull");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await signOut();
     navigate("/login");
-    setUser(null);
   };
-
-  const checkAuth = async () => {
-    const res = await axios.get("http://localhost:5000/api/checkAuth", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    const data = await res.data;
-    if (data.success === true) {
-      setUser(data.data);
-    }
-  };
-
-  useEffect(() => {
-    checkAuth();
-  }, []);
 
   return (
-    <div className="bg-primary flex p-5 flex-col md:flex-row justify-between items-center">
-      <div className="flex gap-3">
-        <img
-          src={user?.profile}
-          alt={user?.name}
-          width={40}
-          height={30}
-          className={`rounded-full shadow-inner ${
-            user?.profile ? "block " : "hidden"
-          }`}
-        />
-        <h2 className="text-3xl font-concertOne text-white">CodeDate</h2>
-      </div>
-      {!user?.name ? (
-        <ul className="flex gap-3 text-white font-ropaSans text-2xl">
-          <li className="hover:underline cursor-pointer transition-all duration-300 ease-in-out">
-            About
-          </li>
-          <li className="hover:underline cursor-pointer transition-all duration-300 ease-in-out">
-            Download
-          </li>
-          <li className="hover:underline cursor-pointer transition-all duration-300 ease-in-out">
-            Privacy
-          </li>
-        </ul>
-      ) : (
-        <ul className="flex gap-3 text-white font-ropaSans text-2xl">
-          <Link
-            to="/profile"
-            className="hover:underline cursor-pointer transition-all duration-300 ease-in-out"
-          >
-            New
-          </Link>
-          <Link
-            to="/profile/chats"
-            className="hover:underline cursor-pointer transition-all duration-300 ease-in-out"
-          >
-            Chats
-          </Link>
-          <li className="hover:underline cursor-pointer transition-all duration-300 ease-in-out">
-            Friends
-          </li>
-        </ul>
-      )}
+    <nav className="bg-white text-black shadow-md">
+      <div className="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
+        
+        {/* Logo */}
+        <Link to="/" className="flex gap-3 items-center cursor-pointer">
+          <img src="/logoo.svg" className="h-10 w-10" alt="logo" />
+          <h2 className="text-3xl font-bold">
+            W<span className="text-yellow-400">ink</span>
+            D<span className="text-yellow-400">ate</span>
+          </h2>
+        </Link>
 
-      <div>
-        {user?.name ? (
-          <button
-            onClick={handleLogout}
-            className="font-ropaSans text-2xl text-black px-5 py-1 rounded-full bg-white hover:bg-black hover:text-white transition-all duration-300 ease-in-out"
-          >
-            Log Out
-          </button>
+        {/* Nav Links */}
+        {isSignedIn ? (
+          <ul className="hidden md:flex gap-6">
+            <Link to="/profile" className="px-4 py-1 text-lg hover:bg-yellow-400 rounded-full">
+              Find Friends
+            </Link>
+            <Link to="/profile/chats" className="px-4 py-1 text-lg hover:bg-yellow-400 rounded-full">
+              Chats
+            </Link>
+          </ul>
         ) : (
-          <Link
-            to="/login"
-            className="font-ropaSans text-2xl text-black px-5 py-1 rounded-full bg-white hover:bg-black hover:text-white transition-all duration-300 ease-in-out"
-          >
-            Log In
-          </Link>
+          <ul className="hidden md:flex gap-6">
+            <li className="px-4 py-1 text-lg hover:bg-yellow-400 rounded-full cursor-pointer">About</li>
+            <li className="px-4 py-1 text-lg hover:bg-yellow-400 rounded-full cursor-pointer">Download</li>
+            <li className="px-4 py-1 text-lg hover:bg-yellow-400 rounded-full cursor-pointer">Privacy</li>
+          </ul>
         )}
+
+        {/* Profile */}
+        <div className="relative">
+          {isSignedIn ? (
+            <div onClick={() => setDropdownOpen(!dropdownOpen)}>
+              <button className="flex items-center gap-3 px-4 py-2 rounded-full border border-yellow-400">
+                <img
+                  src={user.imageUrl}
+                  alt={user.fullName}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <span>{user.fullName}</span>
+                <IoChevronDown className="ml-2" />
+              </button>
+
+              {dropdownOpen && (
+                <div className="absolute right-0 top-16 bg-white text-black rounded-lg shadow-xl w-36">
+                  <Link
+                    to="/profile-setup"
+                    className="block px-4 py-2 hover:bg-gray-200"
+                  >
+                    My Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link to="/login" className="px-5 py-2 bg-yellow-400 rounded-full">
+              Log In
+            </Link>
+          )}
+        </div>
+
       </div>
-    </div>
+    </nav>
   );
 };
 

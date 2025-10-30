@@ -6,19 +6,27 @@ const { connectDb } = require("./db/connection");
 const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const { clerkMiddleware } = require("@clerk/express");
+
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:5173",
+    credentials: true,
   },
 });
 
 require("dotenv").config();
+
 app.use(express.json());
+
+app.use(clerkMiddleware());
+
 connectDb();
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 

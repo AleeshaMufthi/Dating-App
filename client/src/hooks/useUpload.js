@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const useUpload = async ({ image, onUploadProgress }) => {
-  const upload = async () => {
+const useUpload = async ({ image, onUploadProgress }) => {
+ 
     try {
       const formData = new FormData();
       formData.append("file", image);
@@ -21,7 +21,7 @@ export const useUpload = async ({ image, onUploadProgress }) => {
         formData,
         config
       );
-      const data = await res.data;
+      const data = res.data;
       if (!data) throw new Error("Error uploading image");
 
       return {
@@ -31,7 +31,6 @@ export const useUpload = async ({ image, onUploadProgress }) => {
     } catch (error) {
       return error.message;
     }
-  };
-  const { public_id, url } = await upload();
-  return { public_id, url };
 };
+
+export default useUpload

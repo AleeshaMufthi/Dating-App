@@ -4,19 +4,28 @@ const {
   addToFav,
   addToDis,
   getFromFav,
+  updateLocation,
+  updateProfile,
 } = require("../controllers/userController");
-const { verifyToken } = require("../middlewares/verifyToken");
+// const { verifyToken } = require("../middlewares/verifyToken");
+const { clerkAuth } = require("../middlewares/clerkAuth");
+const { syncUser  } = require("../controllers/authSync");
+const { requireAuth } = require("@clerk/express")
 
 const router = require("express").Router();
 
 // AUTHENTICATION ROUTES
 router.post("/signup", signup);
 router.post("/login", login);
-router.get("/checkAuth", verifyToken, checkAuth);
+router.post("/checkAuth", syncUser);
+
 
 // USER ROUTES
 router.get("/getUsers", getUsers);
-router.put("/addToFav/:id", verifyToken, addToFav);
-router.put("/addToDis/:id", verifyToken, addToDis);
-router.get("/getFromFav", verifyToken, getFromFav);
+router.put("/addToFav/:id", addToFav);
+router.put("/addToDis/:id", addToDis);
+router.get("/getFromFav", getFromFav);
+router.put("/updateLocation", updateLocation);
+router.put("/updateProfile", requireAuth(), updateProfile);
+
 module.exports = router;

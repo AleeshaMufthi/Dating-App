@@ -2,26 +2,48 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
+    clerkId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
     name: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
       unique: true,
-      required: true,
+    },
+    age: {
+      type: Number,
+    },
+    work: {
+      type: String,
+    },
+    education: {
+      type: String,
+    },
+    gender: {
+      type: String,
+    },
+    hometown: {
+      type: String,
     },
     password: {
       type: String,
-      required: true,
     },
     profile: {
-      type: String,
-      required: true,
+      url: { type: String },
+      publicId: { type: String },
     },
-    publicId: {
+    // publicId: {
+    //   type: String,
+    // },
+    interests: [{
       type: String,
-      required: true,
+    }],
+    foodPreference: {
+      type: String
     },
     favourites: [
       {
@@ -35,6 +57,12 @@ const userSchema = new mongoose.Schema(
         ref: "user",
       },
     ],
+    travelLocation: {
+      placeName: { type: String },
+      lat: { type: Number },
+      lng: { type: Number },
+      images: [{ type: String }],
+    },
   },
   { timestamps: true }
 );
