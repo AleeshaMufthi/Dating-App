@@ -27,9 +27,6 @@ const SyncUser = () => {
    
     console.log(user,'user');
     
-    console.log(user.primaryEmailAddress.emailAddress);
-    
-
     const syncClerkUser = async () => {
       try {
         const res = await axios.post(
@@ -67,7 +64,7 @@ const App = () => {
  
   return (
     <>
-     <LoadScript googleMapsApiKey="AIzaSyBdRvcUxejuO250pfUJlpi9cxpQmFLFeEo" libraries={['places']}>
+     <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} libraries={['places']}>
       <AppContextProvier>
         <BrowserRouter>
           <Navbar />

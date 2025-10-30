@@ -23,9 +23,15 @@ app.use(express.json());
 app.use(clerkMiddleware());
 
 connectDb();
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
   })
 );

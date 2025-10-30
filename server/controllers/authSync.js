@@ -3,11 +3,9 @@ const { clerkClient, getAuth } = require("@clerk/clerk-sdk-node");
 
 const syncUser = async (req, res) => {
   try {
-    console.log('called sync user????');
     
     const { email, name, clerkId } = req.body;
     console.log(req.body,'req.bodyyy');
-    
 
     if (!email || !clerkId) {
       return res.status(400).json({ success: false, message: "Email and clerkId is required" });

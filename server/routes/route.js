@@ -21,11 +21,11 @@ router.post("/checkAuth", syncUser);
 
 
 // USER ROUTES
-router.get("/getUsers", getUsers);
-router.put("/addToFav/:id", addToFav);
-router.put("/addToDis/:id", addToDis);
-router.get("/getFromFav", getFromFav);
-router.put("/updateLocation", updateLocation);
+router.get("/getUsers", requireAuth(), getUsers);
+router.put("/addToFav/:id", requireAuth(), addToFav);
+router.put("/addToDis/:id", requireAuth(), addToDis);
+router.get("/getFromFav", requireAuth(), getFromFav);
+router.put("/updateLocation", requireAuth(), updateLocation);
 router.put("/updateProfile", requireAuth(), updateProfile);
 
 module.exports = router;
